@@ -2,7 +2,7 @@ import csv
 import datetime
 
 nombreDeArchivo = "test.csv"
-dniBuscado = "1617591371"
+dniBuscado = 1617591371
 salida = "Pantalla"
 
 
@@ -41,9 +41,23 @@ def extractorDeDatos(archivo):
 
 
 def filtro(matriz,dni):
+    n = 8
+    n2 = 0
+    nrosChq = []
     matrizNueva = []
 
-    return matrizNueva  # Si hay un error matriz nueva devuelve ["Error",Nro de cheque repetido]
+    for i in range(len(matriz)):
+        if matriz[i][n] == dni:
+            nrosChq.append(matriz[i][n2])
+            matrizNueva.append(matriz[i])
+
+    if len(nrosChq) == 0:
+        return ["Error 1"]
+    
+    nrosChqSinRepetir = set(nrosChq)
+    if len(nrosChq) != len(nrosChqSinRepetir):
+        return ["Error 0"]
+    return matrizNueva
 
 
 def printeador(matriz):
@@ -58,11 +72,14 @@ def guardarCSV(matriz,dni):
 
 def main():
     listaCompleta = extractorDeDatos(nombreDeArchivo)
-
-    listaReducida = filtro(listaCompleta,dniBuscado)
-    if listaReducida[0] == "Error":
-        print("ERROR: Se repite el siguiente cheque del DNI",dniBuscado,":",listaReducida[1])
+    
+    listaReducida = filtro(listaCompleta,int(dniBuscado))
+    if listaReducida[0] == "Error 0":
+        print("ERROR: Se repiten uno o mas cheques del DNI:",dniBuscado)
         return  # Se corta el codigo aca y no se sigue
+    elif listaReducida[0] == "Error 1":
+        print("ERROR: No existen cheques para el DNI:",dniBuscado)
+        return
 
     if salida.upper() == "PANTALLA":
         printeador(listaReducida)
