@@ -35,7 +35,7 @@ def extractorDeDatos(archivo):
 
         return nuevaMatriz
 
-    datos = open(archivo,"r")
+    datos = open(archivo, "r")
     matriz = csv.DictReader(datos)
     matriz = valor(matriz)
     datos.close()
@@ -43,15 +43,15 @@ def extractorDeDatos(archivo):
     return matriz
 
 
-def filtro(matriz,dni,tipo,estado,fechas):
-    matriz = revisarDNI(matriz,dni)
+def filtro(matriz, dni, tipo, estado, fechas):
+    matriz = revisarDNI(matriz, dni)
     if matriz[0] == "Error 1" or matriz[0] == "Error 0":
         return matriz
-    inicio,fin = obtenerFechas(fechas)
-    matriz = revisarFechas(matriz,inicio,fin)
+    inicio, fin = obtenerFechas(fechas)
+    matriz = revisarFechas(matriz, inicio, fin)
     if len(matriz) == 0:
         return["Error 2"]
-    matriz = revisarEstado(matriz,estado)
+    matriz = revisarEstado(matriz, estado)
     if len(matriz) == 0:
         return["Error 3"]
     return matriz
@@ -79,15 +79,15 @@ def obtenerFechas(criterio):
         else:
             anio = int(temp)
             if inicio == 0:
-                inicio = datetime.datetime(anio,mes,dia,0,0)
-            dia,mes,anio,temp = "","","",""
+                inicio = datetime.datetime(anio, mes, dia, 0, 0)
+            dia, mes, anio, temp = "", "", "", ""
 
     anio = int(temp)
-    fin = datetime.datetime(anio,mes,dia,0,0)
-    return inicio,fin
+    fin = datetime.datetime(anio, mes, dia, 0, 0)
+    return inicio, fin
 
 
-def revisarDNI(matriz,dni):
+def revisarDNI(matriz, dni):
     n = 8
     n2 = 0
     nrosChq = []
@@ -107,7 +107,7 @@ def revisarDNI(matriz,dni):
     return matrizNueva
 
 
-def revisarFechas(matriz,inicio,fin):
+def revisarFechas(matriz, inicio, fin):
     nuevaMatriz = []
     for valor in matriz:
         fechaOr = datetime.datetime.fromtimestamp(valor[7])
@@ -118,8 +118,19 @@ def revisarFechas(matriz,inicio,fin):
     return matriz
 
 
-def revisarEstado(matriz,estado):
-    return matriz
+def revisarEstado(matriz, estado):
+    n = 10
+    nuevaMatriz = []
+
+    for i in range(len(matriz)):
+        if matriz[i][n] == estado:
+            nuevaMatriz.append(matriz[i])
+
+    if len(nuevaMatriz) == 0:
+        return matriz
+
+    else:
+        return nuevaMatriz
 
 
 def printeador(matriz):
@@ -127,7 +138,7 @@ def printeador(matriz):
     return
 
 
-def guardarCSV(matriz,dni):
+def guardarCSV(matriz, dni):
 
     return
 
@@ -135,24 +146,27 @@ def guardarCSV(matriz,dni):
 def main():
     listaCompleta = extractorDeDatos(nombreDeArchivo)
 
-    listaReducida = filtro(listaCompleta,int(dniBuscado),tipoCheque.upper(),estado.upper(),rango)
+    listaReducida = filtro(listaCompleta, int(
+        dniBuscado), tipoCheque.upper(), estado.upper(), rango)
     if listaReducida[0] == "Error 0":
-        print("ERROR: Se repiten uno o mas cheques del DNI:",dniBuscado)
+        print("ERROR: Se repiten uno o mas cheques del DNI:", dniBuscado)
         return  # Se corta el codigo aca y no se sigue
     elif listaReducida[0] == "Error 1":
-        print("ERROR: No existen cheques para el DNI:",dniBuscado)
+        print("ERROR: No existen cheques para el DNI:", dniBuscado)
         return
     elif listaReducida[0] == "Error 2":
-        print("ERROR: No existen cheques entre las fechas",rango,"para el DNI:",dniBuscado)
+        print("ERROR: No existen cheques entre las fechas",
+              rango, "para el DNI:", dniBuscado)
         return
     elif listaReducida[0] == "Error 3":
-        print("ERROR: No existen cheques con el estado",estado,"para el DNI:",dniBuscado)
+        print("ERROR: No existen cheques con el estado",
+              estado, "para el DNI:", dniBuscado)
         return
 
     if salida.upper() == "PANTALLA":
         printeador(listaReducida)
     elif salida.upper() == "CSV":
-        guardarCSV(listaReducida,dniBuscado)
+        guardarCSV(listaReducida, dniBuscado)
 
 
 main()

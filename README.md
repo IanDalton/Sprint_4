@@ -28,7 +28,7 @@ Para instalar las dependencias en Linux ejecutar:
 
 Para correr el programa:
 
-- 
+-  
 
 ## Autores del proyecto
 
