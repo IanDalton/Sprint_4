@@ -133,14 +133,16 @@ def revisarEstado(matriz, estado):
     else:
         return nuevaMatriz
 
+def printeador(listaReducida):
+    for i in range(len(listaReducida)):
+        print(listaReducida[i])
+    return
 
-def printeador(matriz):
-    
-    return 
 
-
-def guardarCSV(matriz, dni):
-
+def guardarCSV(matriz,dni):
+    now = datetime.datetime.now()
+    with open(now.strftime('%Y-%m-%dT%H:%M:%S.csv'), "w") as f:
+        f.write(matriz)
     return
 
 
