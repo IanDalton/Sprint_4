@@ -4,7 +4,10 @@ import sys
 
 nombreDeArchivo = "test.csv"
 dniBuscado = 1617591371
-salida = "csv"
+salida = "Pantalla"
+tipoCheque = "Emitido"
+estado = "APROBADO"
+rango = "03-06-2020:04-07-2022"
 
 
 def extractorDeDatos(archivo):
@@ -41,7 +44,51 @@ def extractorDeDatos(archivo):
     return matriz
 
 
-def filtro(matriz,dni):
+def filtro(matriz,dni,tipo,estado,fechas):
+    matriz = revisarDNI(matriz,dni)
+    if matriz[0] == "Error 1" or matriz[0] == "Error 0":
+        return matriz
+    inicio,fin = obtenerFechas(fechas)
+    matriz = revisarFechas(matriz,inicio,fin)
+    if len(matriz) == 0:
+        return["Error 2"]
+    matriz = revisarEstado(matriz,estado)
+    if len(matriz) == 0:
+        return["Error 3"]
+    return matriz
+
+
+def obtenerFechas(criterio):
+    dia = ""
+    mes = ""
+    anio = ""
+    temp = ""
+    inicio = 0
+    fin = 0
+    for char in criterio:
+        if char != ":":
+
+            if char != "-":
+                temp += char
+
+            else:
+                if dia == "":
+                    dia = int(temp)
+                elif mes == "":
+                    mes = int(temp)
+                temp = ""
+        else:
+            anio = int(temp)
+            if inicio == 0:
+                inicio = datetime.datetime(anio,mes,dia,0,0)
+            dia,mes,anio,temp = "","","",""
+
+    anio = int(temp)
+    fin = datetime.datetime(anio,mes,dia,0,0)
+    return inicio,fin
+
+
+def revisarDNI(matriz,dni):
     n = 8
     n2 = 0
     nrosChq = []
@@ -54,7 +101,7 @@ def filtro(matriz,dni):
 
     if len(nrosChq) == 0:
         return ["Error 1"]
-    
+
     nrosChqSinRepetir = set(nrosChq)
     if len(nrosChq) != len(nrosChqSinRepetir):
         return ["Error 0"]
@@ -76,14 +123,19 @@ def guardarCSV(matriz,dni):
 
 def main():
     listaCompleta = extractorDeDatos(nombreDeArchivo)
-    
-    listaReducida = filtro(listaCompleta,int(dniBuscado))
-    
+
+    listaReducida = filtro(listaCompleta,int(dniBuscado),tipoCheque.upper(),estado.upper(),rango)
     if listaReducida[0] == "Error 0":
         print("ERROR: Se repiten uno o mas cheques del DNI:",dniBuscado)
         return  # Se corta el codigo aca y no se sigue
     elif listaReducida[0] == "Error 1":
         print("ERROR: No existen cheques para el DNI:",dniBuscado)
+        return
+    elif listaReducida[0] == "Error 2":
+        print("ERROR: No existen cheques entre las fechas",rango,"para el DNI:",dniBuscado)
+        return
+    elif listaReducida[0] == "Error 3":
+        print("ERROR: No existen cheques con el estado",estado,"para el DNI:",dniBuscado)
         return
 
     if salida.upper() == "PANTALLA":
