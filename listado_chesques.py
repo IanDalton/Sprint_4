@@ -4,6 +4,9 @@ import datetime
 nombreDeArchivo = "test.csv"
 dniBuscado = 1617591371
 salida = "Pantalla"
+tipoCheque = "Emitido"
+estado = "APROBADO"
+rango = "03-06-2022:04-07-2022"
 
 
 def extractorDeDatos(archivo):
@@ -40,7 +43,46 @@ def extractorDeDatos(archivo):
     return matriz
 
 
-def filtro(matriz,dni):
+def filtro(matriz,dni,tipo,estado,fechas):
+    matriz = revisarDNI(matriz,dni)
+    inicio,fin = obtenerFechas(fechas)
+    matriz = revisarFechas(matriz,inicio,fin)
+    matriz = revisarEstado(matriz,estado)
+    print(inicio,fin)
+    return matriz
+
+
+def obtenerFechas(criterio):
+    dia = ""
+    mes = ""
+    anio = ""
+    temp = ""
+    inicio = 0
+    fin = 0
+    for char in criterio:
+        if char != ":":
+
+            if char != "-":
+                temp += char
+
+            else:
+                if dia == "":
+                    dia = int(temp)
+                elif mes == "":
+                    mes = int(temp)
+                temp = ""
+        else:
+            anio = int(temp)
+            if inicio == 0:
+                inicio = datetime.datetime(anio,mes,dia,0,0)
+            dia,mes,anio,temp = "","","",""
+
+    anio = int(temp)
+    fin = datetime.datetime(anio,mes,dia,0,0)
+    return inicio,fin
+
+
+def revisarDNI(matriz,dni):
     n = 8
     n2 = 0
     nrosChq = []
@@ -53,11 +95,20 @@ def filtro(matriz,dni):
 
     if len(nrosChq) == 0:
         return ["Error 1"]
-    
+
     nrosChqSinRepetir = set(nrosChq)
     if len(nrosChq) != len(nrosChqSinRepetir):
         return ["Error 0"]
     return matrizNueva
+
+
+def revisarFechas(matriz,inicio,fin):
+    return matriz
+
+
+def revisarEstado(matriz,estado):
+
+    return matriz
 
 
 def printeador(matriz):
@@ -72,8 +123,8 @@ def guardarCSV(matriz,dni):
 
 def main():
     listaCompleta = extractorDeDatos(nombreDeArchivo)
-    
-    listaReducida = filtro(listaCompleta,int(dniBuscado))
+
+    listaReducida = filtro(listaCompleta,int(dniBuscado),tipoCheque.upper(),estado.upper(),rango)
     if listaReducida[0] == "Error 0":
         print("ERROR: Se repiten uno o mas cheques del DNI:",dniBuscado)
         return  # Se corta el codigo aca y no se sigue
