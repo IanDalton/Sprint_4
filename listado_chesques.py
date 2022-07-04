@@ -1,5 +1,6 @@
 import csv
 import datetime
+import sys
 
 nombreDeArchivo = "test.csv"
 dniBuscado = 1617591371
@@ -134,8 +135,8 @@ def revisarEstado(matriz, estado):
 
 
 def printeador(matriz):
-
-    return
+    
+    return 
 
 
 def guardarCSV(matriz, dni):
@@ -169,4 +170,5 @@ def main():
         guardarCSV(listaReducida, dniBuscado)
 
 
-main()
+if __name__ == "__main__":
+    main()
