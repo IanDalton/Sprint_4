@@ -1,9 +1,10 @@
 import csv
 import datetime
+import sys
 
 nombreDeArchivo = "test.csv"
 dniBuscado = 1617591371
-salida = "Pantalla"
+salida = "csv"
 
 
 def extractorDeDatos(archivo):
@@ -60,13 +61,16 @@ def filtro(matriz,dni):
     return matrizNueva
 
 
-def printeador(matriz):
-
+def printeador(listaReducida):
+    for i in range(len(listaReducida)):
+        print(listaReducida[i])
     return
 
 
 def guardarCSV(matriz,dni):
-
+    now = datetime.datetime.now()
+    with open(now.strftime('%Y-%m-%dT%H:%M:%S.csv'), "w") as f:
+        f.write(matriz)
     return
 
 
@@ -74,6 +78,7 @@ def main():
     listaCompleta = extractorDeDatos(nombreDeArchivo)
     
     listaReducida = filtro(listaCompleta,int(dniBuscado))
+    
     if listaReducida[0] == "Error 0":
         print("ERROR: Se repiten uno o mas cheques del DNI:",dniBuscado)
         return  # Se corta el codigo aca y no se sigue
@@ -87,4 +92,5 @@ def main():
         guardarCSV(listaReducida,dniBuscado)
 
 
-main()
+if __name__ == "__main__":
+    main()
