@@ -132,25 +132,11 @@ def revisarEstado(matriz, estado):
     else:
         return nuevaMatriz
 
+
 def printeador(listaReducida):
     for i in range(len(listaReducida)):
         print(listaReducida[i])
     return
-
-
-def revisarFechas(matriz,inicio,fin):
-    nuevaMatriz = []
-    for valor in matriz:
-        fechaOr = datetime.datetime.fromtimestamp(valor[7])
-        fechaPa = datetime.datetime.fromtimestamp(valor[8])
-        if inicio < fechaOr and fechaPa < fin:
-            nuevaMatriz.append(valor)
-    matriz = nuevaMatriz
-    return matriz
-
-
-def revisarEstado(matriz,estado):
-    return matriz
 
 
 def guardarCSV(matriz,dni):
