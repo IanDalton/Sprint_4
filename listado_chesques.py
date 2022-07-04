@@ -6,7 +6,7 @@ dniBuscado = 1617591371
 salida = "Pantalla"
 tipoCheque = "Emitido"
 estado = "APROBADO"
-rango = "03-06-2022:04-07-2022"
+rango = "03-06-2020:04-07-2022"
 
 
 def extractorDeDatos(archivo):
@@ -45,10 +45,15 @@ def extractorDeDatos(archivo):
 
 def filtro(matriz,dni,tipo,estado,fechas):
     matriz = revisarDNI(matriz,dni)
+    if matriz[0] == "Error 1" or matriz[0] == "Error 0":
+        return matriz
     inicio,fin = obtenerFechas(fechas)
     matriz = revisarFechas(matriz,inicio,fin)
+    if len(matriz) == 0:
+        return["Error 2"]
     matriz = revisarEstado(matriz,estado)
-    print(inicio,fin)
+    if len(matriz) == 0:
+        return["Error 3"]
     return matriz
 
 
@@ -103,11 +108,17 @@ def revisarDNI(matriz,dni):
 
 
 def revisarFechas(matriz,inicio,fin):
+    nuevaMatriz = []
+    for valor in matriz:
+        fechaOr = datetime.datetime.fromtimestamp(valor[7])
+        fechaPa = datetime.datetime.fromtimestamp(valor[8])
+        if inicio < fechaOr and fechaPa < fin:
+            nuevaMatriz.append(valor)
+    matriz = nuevaMatriz
     return matriz
 
 
 def revisarEstado(matriz,estado):
-
     return matriz
 
 
@@ -130,6 +141,12 @@ def main():
         return  # Se corta el codigo aca y no se sigue
     elif listaReducida[0] == "Error 1":
         print("ERROR: No existen cheques para el DNI:",dniBuscado)
+        return
+    elif listaReducida[0] == "Error 2":
+        print("ERROR: No existen cheques entre las fechas",rango,"para el DNI:",dniBuscado)
+        return
+    elif listaReducida[0] == "Error 3":
+        print("ERROR: No existen cheques con el estado",estado,"para el DNI:",dniBuscado)
         return
 
     if salida.upper() == "PANTALLA":
