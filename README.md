@@ -28,7 +28,13 @@ Para instalar las dependencias en Linux ejecutar:
 
 Para correr el programa:
 
--  
+- Modificar los siguientes parametros:
+nombreDeArchivo = "test.csv"
+dniBuscado = 1617591371
+salida = "csv"
+tipoCheque = "Emitido"
+estado = "APROBADO"
+rango = "03-06-2020:04-07-2022"  
 
 ## Autores del proyecto
 
