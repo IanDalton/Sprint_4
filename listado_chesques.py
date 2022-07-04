@@ -1,10 +1,9 @@
 import csv
 import datetime
-import sys
 
 nombreDeArchivo = "test.csv"
 dniBuscado = 1617591371
-salida = "Pantalla"
+salida = "csv"
 tipoCheque = "Emitido"
 estado = "APROBADO"
 rango = "03-06-2020:04-07-2022"
@@ -114,10 +113,33 @@ def printeador(listaReducida):
     return
 
 
+def revisarFechas(matriz,inicio,fin):
+    nuevaMatriz = []
+    for valor in matriz:
+        fechaOr = datetime.datetime.fromtimestamp(valor[7])
+        fechaPa = datetime.datetime.fromtimestamp(valor[8])
+        if inicio < fechaOr and fechaPa < fin:
+            nuevaMatriz.append(valor)
+    matriz = nuevaMatriz
+    return matriz
+
+
+def revisarEstado(matriz,estado):
+    return matriz
+
+
 def guardarCSV(matriz,dni):
     now = datetime.datetime.now()
-    with open(now.strftime('%Y-%m-%dT%H:%M:%S.csv'), "w") as f:
-        f.write(matriz)
+    with open(now.strftime('%Y-%m-%dT%H-%M-%S.csv'), "w") as f:
+        f.write("NroCheque,CodigoBanco,CodigoScurusal,NumeroCuentaOrigen,NumeroCuentaDestino,Valor,FechaOrigen,FechaPago,DNI,Tipo,Estado\n")
+        for linea in matriz:
+            i = len(linea)
+            for palabra in linea:
+                i -= 1
+                f.write(str(palabra))
+                if i != 0:
+                    f.write(",")
+            f.write("\n")
     return
 
 
@@ -144,5 +166,4 @@ def main():
         guardarCSV(listaReducida,dniBuscado)
 
 
-if __name__ == "__main__":
-    main()
+main()
