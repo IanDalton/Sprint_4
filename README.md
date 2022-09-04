@@ -26,16 +26,10 @@ Para instalar las dependencias en Linux ejecutar:
 
 ## Ejecución del programa
 
-Para correr el programa:
-
-- Modificar los siguientes parametros del archivo "listado_chesques.py":
-nombreDeArchivo = "test.csv"
-dniBuscado = 1617591371
-salida = "csv"
-tipoCheque = "Emitido"
-estado = "APROBADO"
-rango = "03-06-2020:04-07-2022"
-
+- Al ejecutar el programa correr:
+    python listado_chesques.py [Nombre de archivo] [DNI] [salida] [tipo cheque] [estado] [fecha inicio] [fecha fin]
+- Ejemplo:
+    python listado_chesques.py test.csv 44160039 csv DEPOSITADO PENDIENTE 10-06-2002 10-06-2022
 Los parámetros obligatorios son: nombreDeArchivo, dniBuscado, salida, tipoCheque
 Los parámetros opcionales son: estado y rango
 
